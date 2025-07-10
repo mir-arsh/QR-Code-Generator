@@ -200,12 +200,8 @@
         });
 
         function genQR() {
-            const qrURL = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(input.value.trim());
+            const qrURL = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + input.value.trim();
             img.src = qrURL;
-            img.onload = () => {
-                download.href = qrURL;
-                download.disabled = false;
-            };
             txtImg.style.display = "none";
             img.style.display = "block";
         }
