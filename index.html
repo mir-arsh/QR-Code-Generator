@@ -24,6 +24,8 @@
             justify-content: center;
             padding: 20px;
             transform: scale(0.8);
+            transition: background 0.4s;
+            color: #2c3e50;
         }
 
         .container {
@@ -36,6 +38,7 @@
             width: 100%;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background 0.4s, box-shadow 0.3s;
         }
 
         h1 {
@@ -45,6 +48,7 @@
             font-weight: 700;
             background: linear-gradient(135deg, #667eea, #764ba2);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
@@ -102,6 +106,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(0, 0, 0, 0.05);
             margin-top: 2rem;
+            transition: background 0.4s, box-shadow 0.3s;
         }
 
         .qr-placeholder {
@@ -118,6 +123,7 @@
             font-size: 0.9em;
             text-align: center;
             line-height: 1.4;
+            transition: background 0.4s, border-color 0.4s, color 0.4s;
         }
 
         #qrcode {
@@ -161,6 +167,96 @@
             width: 200px;
             height: 200px;
         }
+
+        /* --- DARK MODE --- */
+        body.dark {
+            background: linear-gradient(135deg, #181c29 0%, #111a28 100%);
+            color: #ececec;
+        }
+
+        body.dark .container {
+            background: rgba(30, 33, 40, 0.98);
+            border-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+        }
+
+        body.dark h1 {
+            background: linear-gradient(135deg, #7d5eff, #4839b3);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        body.dark .subtitle {
+            color: #8ca3be;
+        }
+
+        body.dark .input-label {
+            color: #e3e6ee;
+        }
+
+        body.dark .input-field {
+            background: rgba(39, 43, 54, 0.93);
+            color: #ececec;
+            border: 2px solid #333e5a;
+        }
+
+        body.dark .input-field:focus {
+            border-color: #7d5eff;
+            box-shadow: 0 0 0 3px rgba(125, 94, 255, 0.12);
+        }
+
+        body.dark .input-field::placeholder {
+            color: #6c7a98;
+        }
+
+        body.dark .qr-container {
+            background: #191d28;
+            border: 1px solid rgba(0, 0, 0, 0.26);
+        }
+
+        body.dark .qr-placeholder {
+            background: #212234;
+            border: 2px dashed #3a4462;
+            color: #7a8aad;
+        }
+
+        body.dark .generate-btn {
+            background: linear-gradient(135deg, #7d5eff, #4839b3);
+            color: #f7f7fa;
+            box-shadow: 0 5px 15px rgba(125, 94, 255, 0.3);
+        }
+
+        body.dark .generate-btn:disabled {
+            opacity: 0.7;
+        }
+
+        #modeBTN {
+            padding: 10px 28px;
+            z-index: 10;
+            font-size: 1em;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+            border: none;
+            border-radius: 100px;
+            cursor: pointer;
+            transition: background 0.4s;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.18);
+            margin-top: 1rem;
+        }
+
+        #modeBTN:hover {
+            background: linear-gradient(135deg, #7d5eff, #4839b3);
+        }
+
+        body.dark #modeBTN {
+            background: linear-gradient(135deg, #7d5eff, #4839b3);
+            color: #fff;
+        }
+
+        body.dark #modeBTN:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
     </style>
 </head>
 
@@ -168,43 +264,51 @@
     <div class="container">
         <h1>QR Generator</h1>
         <p class="subtitle">Create professional QR codes instantly</p>
-
         <div class="input-group">
             <label class="input-label">Enter your text or URL</label>
-            <input type="text" id="textInput" class="input-field"
-                placeholder="Type any text here..." maxlength="500">
+            <input type="text" id="textInput" class="input-field" placeholder="Type any text here..." maxlength="500">
         </div>
-
         <button id="generateQR" class="generate-btn" onclick="genQR()" disabled>Generate QR Code</button>
-
         <div class="qr-container">
             <div id="qrcode">
                 <div class="qr-placeholder">
-                    <div id="txt-img">
-                        Enter text above to generate<br>your QR code
-                    </div>
+                    <div id="txt-img"> Enter text above to generate<br>your QR code </div>
                     <img src="" alt="QR Code" id="img">
                 </div>
             </div>
-        </div>
+        <button id="modeBTN">Dark Mode</button> 
+        </div>   
     </div>
-
     <script>
+        // QR Code logic
         const input = document.getElementById("textInput");
         const buttonGen = document.getElementById("generateQR");
         const txtImg = document.getElementById("txt-img");
         const img = document.getElementById("img");
-
-        input.addEventListener("input", () => {
-            buttonGen.disabled = input.value.trim() === "";
-        });
-
+        input.addEventListener("input", () => { buttonGen.disabled = input.value.trim() === ""; });
         function genQR() {
-            const qrURL = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + input.value.trim();
+            const qrURL = "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=" + encodeURIComponent(input.value.trim());
             img.src = qrURL;
             txtImg.style.display = "none";
             img.style.display = "block";
         }
+
+        // Theme toggle logic & persist choice
+        const modeBTN = document.getElementById("modeBTN");
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        let isDark = localStorage.getItem('qrTheme') === 'dark' ? true : (localStorage.getItem('qrTheme') === 'light' ? false : prefersDark);
+
+        function applyTheme() {
+            document.body.classList.toggle("dark", isDark);
+            modeBTN.innerText = isDark ? "Light Mode" : "Dark Mode";
+        }
+        applyTheme();
+
+        modeBTN.onclick = function () {
+            isDark = !isDark;
+            localStorage.setItem('qrTheme', isDark ? 'dark' : 'light');
+            applyTheme();
+        };
     </script>
 </body>
 
